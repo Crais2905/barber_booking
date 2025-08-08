@@ -1,6 +1,6 @@
 """Booking table
 
-Revision ID: 376f37e95277
+Revision ID: c419f3a414bc
 Revises: c04eb85f9f69
 Create Date: 2025-08-06 17:49:22.334625
 
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '376f37e95277'
+revision: str = 'c419f3a414bc'
 down_revision: Union[str, Sequence[str], None] = 'c04eb85f9f69'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None

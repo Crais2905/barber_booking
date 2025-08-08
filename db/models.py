@@ -16,8 +16,8 @@ class User(Base):
     last_name: Mapped[str] = mapped_column(String, nullable=False)
     email: Mapped[str] = mapped_column(String, unique=True, nullable=False)
     hashed_password: Mapped[str] = mapped_column(String, nullable=True)
-    phone: Mapped[int] = mapped_column(Integer, nullable=False)
-    is_barber: Mapped[bool] = mapped_column(Boolean)
+    phone: Mapped[str] = mapped_column(String, nullable=False)
+    is_barber: Mapped[bool] = mapped_column(Boolean, default=False)
     barber: Mapped[Optional['Barber']] = relationship("Barber", back_populates="user")
 
 

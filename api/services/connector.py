@@ -1,8 +1,7 @@
 from fastapi import Depends
-from contextlib import asynccontextmanager
 from decouple import config
 
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
+from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy import insert, delete
 
