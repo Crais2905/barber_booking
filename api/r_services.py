@@ -6,6 +6,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from api.services.services import ServicesCRUD
 from schemas.services import ServicesCreate, ServicesPublic
 from db.session import get_session
+from db.models import User
+from auth.dependencies import get_current_user
 
 router = APIRouter()
 
@@ -14,7 +16,8 @@ router = APIRouter()
 async def create_service(
     service_data: ServicesCreate,
     service_crud: ServicesCRUD = Depends(ServicesCRUD),
-    session: AsyncSession = Depends(get_session)
+    session: AsyncSession = Depends(get_session),
+    current_user: User = Depends(get_current_user)
 ):
     return await service_crud.write_to_db(service_data, session)
 
@@ -40,6 +43,7 @@ async def get_service(
 async def delete_service(
     service_id: int,
     service_crud: ServicesCRUD = Depends(ServicesCRUD),
-    session: AsyncSession = Depends(get_session)
+    session: AsyncSession = Depends(get_session),
+    current_user: User = Depends(get_current_user)
 ):
     return await service_crud.delete_object_by_id(service_id, session)

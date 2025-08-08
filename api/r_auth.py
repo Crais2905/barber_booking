@@ -3,8 +3,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from schemas.user import UserCreate, UserPublic, UserLogin
 from auth.tokens import create_access_token
+from auth.dependencies import get_current_user
 from api.services.user import UserCRUD
 from db.session import get_session
+from db.models import User
 
 router = APIRouter()
 
@@ -28,8 +30,9 @@ async def login(
     login_data: UserLogin,
     response: Response,
     user_crud: UserCRUD = Depends(UserCRUD),
-    session: AsyncSession = Depends(get_session)
+    session: AsyncSession = Depends(get_session),
 ):
+
     user = await user_crud.get_user_by_email(login_data.email, session)
 
     if not user or not await user_crud.verify_password(password=login_data.password, hashed_password=user.hashed_password):
@@ -42,3 +45,12 @@ async def login(
         "access_token": access_token
     }
 
+@router.post("/logout/")
+async def logout(
+    response: Response,    
+    user_crud: UserCRUD = Depends(UserCRUD),
+    session: AsyncSession = Depends(get_session),
+    current_user: User = Depends(get_current_user)
+):
+    response.delete_cookie("access_token")
+    return {"Log out": "successful"}
