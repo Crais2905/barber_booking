@@ -1,9 +1,11 @@
 from fastapi import Depends
 from decouple import config
+from typing import Any
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy import insert, delete
+from sqlalchemy.orm import selectinload
 
 from db.session import get_session
 
@@ -20,13 +22,25 @@ class Connector:
         return result.scalar()
 
     
-    async def get_object_by_id(self, obj_id: int, session: AsyncSession):
+    async def get_object_by_id(
+        self, obj_id: int,
+        session: AsyncSession,
+        selectinload_field: Any = None,
+    ):
         stmt = select(self.model).where(self.model.id == obj_id)
+
+        if selectinload_field is not None:
+            stmt = stmt.options(selectinload(getattr(self.model, selectinload_field)))
+
         return await session.scalar(stmt)
     
 
-    async def get_objects(self, session):
+    async def get_objects(self, session, selectinload_field: Any = None,):
         stmt = select(self.model)
+
+        if selectinload_field is not None:
+            stmt = stmt.options(selectinload(getattr(self.model, selectinload_field)))
+            
         return await session.scalars(stmt)
     
 

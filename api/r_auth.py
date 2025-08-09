@@ -48,8 +48,6 @@ async def login(
 @router.post("/logout/")
 async def logout(
     response: Response,    
-    user_crud: UserCRUD = Depends(UserCRUD),
-    session: AsyncSession = Depends(get_session),
     current_user: User = Depends(get_current_user)
 ):
     response.delete_cookie("access_token")
