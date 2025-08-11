@@ -25,7 +25,7 @@ async def get_barbers(
     barber_crud: BarberCRUD = Depends(BarberCRUD),
     session: AsyncSession = Depends(get_session),
 ):
-    return await barber_crud.get_objects(session, "user")
+    return await barber_crud.get_objects(session, ["user"])
 
 
 @router.get("/{barber_id}/", response_model=BarberPublic, status_code=status.HTTP_200_OK)

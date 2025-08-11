@@ -25,21 +25,23 @@ class Connector:
     async def get_object_by_id(
         self, obj_id: int,
         session: AsyncSession,
-        selectinload_field: Any = None,
+        selectinload_fields: list = None,
     ):
         stmt = select(self.model).where(self.model.id == obj_id)
 
-        if selectinload_field is not None:
-            stmt = stmt.options(selectinload(getattr(self.model, selectinload_field)))
+        if selectinload_fields is not None:
+            for field in selectinload_fields:
+                stmt = stmt.options(selectinload(getattr(self.model, field)))
 
         return await session.scalar(stmt)
     
 
-    async def get_objects(self, session, selectinload_field: Any = None,):
+    async def get_objects(self, session, selectinload_fields: Any = None,):
         stmt = select(self.model)
 
-        if selectinload_field is not None:
-            stmt = stmt.options(selectinload(getattr(self.model, selectinload_field)))
+        if selectinload_fields is not None:
+            for field in selectinload_fields:
+                stmt = stmt.options(selectinload(getattr(self.model, field)))
             
         return await session.scalars(stmt)
     

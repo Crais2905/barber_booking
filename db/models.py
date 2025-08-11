@@ -19,6 +19,11 @@ class User(Base):
     phone: Mapped[str] = mapped_column(String, nullable=False)
     is_barber: Mapped[bool] = mapped_column(Boolean, default=False)
     barber: Mapped[Optional['Barber']] = relationship("Barber", back_populates="user")
+    bookings: Mapped[list['Booking']] = relationship(
+        "Booking",
+        back_populates="user",
+        cascade="all, delete-orphan"
+    )
 
 
 class Service(Base):
@@ -29,6 +34,11 @@ class Service(Base):
     description: Mapped[str] = mapped_column(Text, nullable=False)
     duration_minute: Mapped[int] = mapped_column(Integer, nullable=False)
     price: Mapped[int] = mapped_column(Integer, nullable=False)
+    bookings: Mapped[list['Booking']] = relationship(
+        "Booking",
+        back_populates="service",
+        cascade="all, delete-orphan"
+    )
 
 
 class Barber(Base):
@@ -38,7 +48,12 @@ class Barber(Base):
     bio: Mapped[str] = mapped_column(Text, nullable=False)
     available_hours: Mapped[int] = mapped_column(Integer)
     user_id: Mapped[int] = mapped_column(Integer, ForeignKey('user.id'), unique=True)
-    user: Mapped[User] = relationship(back_populates='barber')
+    user: Mapped[User] = relationship(back_populates='barber',  lazy="selectin")
+    bookings: Mapped[list['Booking']] = relationship(
+        "Booking",
+        back_populates="barber",
+        cascade="all, delete-orphan"
+    )
 
 
 class Booking(Base):
@@ -51,3 +66,15 @@ class Booking(Base):
     created_at: Mapped[datetime] =  mapped_column(DateTime, default=datetime.now)
     date: Mapped[datetime] = mapped_column(Date)
     time: Mapped[datetime] = mapped_column(Time)
+    user: Mapped['User'] = relationship(
+        back_populates="bookings",
+        lazy="selectin"
+    )
+    barber: Mapped['Barber'] = relationship(
+        back_populates="bookings",
+        lazy="selectin"
+    )
+    service: Mapped['Service'] = relationship(
+        back_populates="bookings",
+        lazy="selectin"
+    )
