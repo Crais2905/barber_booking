@@ -1,5 +1,6 @@
 from pydantic import BaseModel, field_validator
 from datetime import datetime, time, date
+from typing import Optional
 
 from schemas.barber import BarberPublic
 from schemas.user import UserBase
@@ -7,7 +8,7 @@ from schemas.services import ServicesPublic
 
 
 class BookingCreate(BaseModel):
-    user_id: int
+    user_id: Optional[int] = None
     barber_id: int
     service_id: int
     date: str
