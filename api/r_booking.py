@@ -48,9 +48,27 @@ async def create_booking(
 @router.get("/", response_model=List[BookingPublic])
 async def get_all_bookings(
     booking_crud: BookingCRUD = Depends(BookingCRUD),
-    session: AsyncSession = Depends(get_session)
+    session: AsyncSession = Depends(get_session),
 ):
-    return await booking_crud.get_objects(session, ["user", "barber", "service"])
+    return await booking_crud.get_objects(session)
+
+
+@router.get("/me", response_model=List[BookingPublic])
+async def get_user_bookings(
+    booking_crud: BookingCRUD = Depends(BookingCRUD),
+    session: AsyncSession = Depends(get_session),
+    current_user: User = Depends(get_current_user)
+):
+    return await booking_crud.get_objects(session, where_clause=Booking.user_id == current_user.id)
+
+
+@router.get("/barber/{barber_id}/", response_model=List[BookingPublic])
+async def get_barber_bookings(
+    barber_id: int,
+    booking_crud: BookingCRUD = Depends(BookingCRUD),
+    session: AsyncSession = Depends(get_session),
+):
+    return await booking_crud.get_objects(session, Booking.barber_id == barber_id)
 
 
 @router.get("/{booking_id}/", response_model=BookingPublic, status_code=status.HTTP_200_OK)

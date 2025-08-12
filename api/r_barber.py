@@ -25,7 +25,7 @@ async def get_barbers(
     barber_crud: BarberCRUD = Depends(BarberCRUD),
     session: AsyncSession = Depends(get_session),
 ):
-    return await barber_crud.get_objects(session, ["user"])
+    return await barber_crud.get_objects(session)
 
 
 @router.get("/{barber_id}/", response_model=BarberPublic, status_code=status.HTTP_200_OK)
@@ -34,7 +34,7 @@ async def get_barber(
     barber_crud: BarberCRUD = Depends(BarberCRUD),
     session: AsyncSession = Depends(get_session),
 ):
-    return await barber_crud.get_object_by_id(barber_id, session, "user")
+    return await barber_crud.get_object_by_id(barber_id, session)
 
 
 @router.delete("/{barber_id}/", status_code=status.HTTP_204_NO_CONTENT)
@@ -43,5 +43,4 @@ async def delete_barber(
     barber_crud: BarberCRUD = Depends(BarberCRUD),
     session: AsyncSession = Depends(get_session),
 ):
-   await barber_crud.delete_object_by_id(barber_id, session)
-   return {"ok": "ok"}
+   return await barber_crud.delete_object_by_id(barber_id, session)
