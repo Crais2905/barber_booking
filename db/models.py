@@ -1,5 +1,5 @@
 from typing import Optional
-from datetime import datetime
+from datetime import datetime, time
 
 from sqlalchemy.orm import declarative_base, Mapped, mapped_column, relationship
 from sqlalchemy import String, ForeignKey, Integer, Boolean, Text, DateTime, Date, Time
@@ -46,7 +46,7 @@ class Barber(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     bio: Mapped[str] = mapped_column(Text, nullable=False)
-    available_hours: Mapped[int] = mapped_column(Integer)
+    work_end_time: Mapped[time] = mapped_column(Time, nullable=True)
     user_id: Mapped[int] = mapped_column(Integer, ForeignKey('user.id'), unique=True)
     user: Mapped[User] = relationship(back_populates='barber',  lazy="selectin")
     bookings: Mapped[list['Booking']] = relationship(

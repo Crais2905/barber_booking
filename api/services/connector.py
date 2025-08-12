@@ -36,7 +36,7 @@ class Connector:
         return await session.scalar(stmt)
     
 
-    async def get_objects(self, session, selectinload_fields: Any = None,):
+    async def get_objects(self, session, selectinload_fields: list = None,):
         stmt = select(self.model)
 
         if selectinload_fields is not None:

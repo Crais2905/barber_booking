@@ -1,11 +1,12 @@
-from fastapi import Depends
+from datetime import date
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
-from sqlalchemy import insert, delete
+from sqlalchemy import insert
+from sqlalchemy.orm import selectinload
 
 from .connector import Connector
-from db.models import Service, User, Barber, Booking
+from db.models import Booking
 from schemas.booking import BookingCreate
 
 class BookingCRUD(Connector):
@@ -24,10 +25,17 @@ class BookingCRUD(Connector):
 
         return result.scalar()
     
-    # async def get_all_bookings(
-    #     self, 
-    #     session: AsyncSession,
-    #     offset: int = 0,
-    #     limit: int = 10,
-    # ):
-    #     booking = 
+    
+    async def get_barber_bookings_by_date(
+        self,
+        barber_id: int,
+        date: date,
+        session: AsyncSession
+    ):
+        stmt = (select(self.model)
+            .options(selectinload(Booking.service))
+            .where(Booking.barber_id == barber_id)
+            .where(Booking.date == date)
+        )
+
+        return await session.scalars(stmt)
